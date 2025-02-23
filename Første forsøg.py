@@ -4,6 +4,8 @@ import scipy.stats as stats
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 D = pd.read_csv('MachineLearningOgDataMining/Projekt/Machlearn/abalone/abalone.data', sep=';')
+# D = pd.read_csv('MachineLearningOgDataMining/Projekt/Machlearn/abalone/abalone.data', sep=';') der hvor i har filen
+# D = pd.read_csv('MachineLearningOgDataMining/Projekt/Machlearn/abalone/abalone.data', sep=';') der hvor i har filen
 
 Male = D["Sex"]== "M"
 Female = D["Sex"] == "F"
