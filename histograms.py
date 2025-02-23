@@ -26,12 +26,7 @@ femaleinfo = D_female.describe()
 infantinfo = D_infant.describe()
 datainfo = D.describe()
 
-
-
-
-# QQ plots for each parameter for abalone males
 parameters = ["Length", "Diameter", "Height", "Whole weight", "Shucked weight", "Viscera weight", "Shell weight", "Rings"]
-
 
 ################################### histograms
 
