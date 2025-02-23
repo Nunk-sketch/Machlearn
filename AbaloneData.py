@@ -27,6 +27,11 @@ correlation_matrix = D_infant.drop(columns=['Sex']).corr()
 # Print the correlation matrix
 print("Correlation matrix for infant abalones:\n", correlation_matrix)
 
+# Total correlation
+correlation_matrix = D.drop(columns=["Sex"]).corr()
+
+# Print the correlation matrix
+print("Correlation matrix for all abalones:\n", correlation_matrix)
 
 
 # Male covariance
@@ -46,3 +51,9 @@ covariance_matrix_infant = D_infant.drop(columns=['Sex']).cov()
 
 # Print the covariance matrix
 print("Covariance matrix for infant abalones:\n", covariance_matrix_infant)
+
+# Total covariance
+covariance_matrix = D.drop(columns=["Sex"]).cov()
+
+# Print the covariance matrix
+print("Covariance matrix for all abalones:\n", covariance_matrix)
