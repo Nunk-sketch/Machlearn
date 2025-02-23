@@ -31,11 +31,6 @@ femaleinfo = D_female.describe()
 infantinfo = D_infant.describe()
 datainfo = D.describe()
 
-# print("Male Info:\n", maleinfo)
-# print("Female Info:\n", femaleinfo)
-# print("Infant Info:\n", infantinfo)
-# print("Data Info:\n", datainfo)
-
 # Compare the statistics of male, female, and infant abalones
 comparison = pd.DataFrame({
     "Male": maleinfo.mean(),
