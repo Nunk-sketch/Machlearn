@@ -15,6 +15,7 @@ for i, param in enumerate(parameters):
     axes[i].plot(x, y, 'r')
 
 plt.tight_layout()
+plt.savefig('histograms_male.png')
 plt.show()
 
 fig, axes = plt.subplots(4, 2, figsize=(15, 20))
@@ -29,6 +30,7 @@ for i, param in enumerate(parameters):
     axes[i].plot(x, y, 'r')
 
 plt.tight_layout()
+plt.savefig('histograms_female.png')
 plt.show()
 
 fig, axes = plt.subplots(4, 2, figsize=(15, 20))
@@ -43,4 +45,20 @@ for i, param in enumerate(parameters):
     axes[i].plot(x, y, 'r')
 
 plt.tight_layout()
+plt.savefig('histograms_infant.png')
+plt.show()
+
+fig, axes = plt.subplots(4, 2, figsize=(15, 20))
+axes = axes.flatten()
+
+for i, param in enumerate(parameters):
+    n, bins, patches = axes[i].hist(D_clean[param], bins=30, edgecolor='black', density=True)
+    axes[i].set_title(f'Histogram of {param} for all abalones')
+
+    x = np.linspace(D_clean[param].min(), D_clean[param].max(), 100)
+    y = stats.norm.pdf(x, np.mean(D_clean[param]), np.std(D_clean[param]))
+    axes[i].plot(x, y, 'r')
+
+plt.tight_layout()
+plt.savefig('histograms_all.png')
 plt.show()
