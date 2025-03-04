@@ -29,7 +29,7 @@ infantinfo = D_infant.describe()
 datainfo = D.describe()
 # Convert datainfo to LaTeX format
 datainfo_latex = datainfo.to_latex()
-print(datainfo_latex)
+
 
 
 parameters = D.columns[1:]

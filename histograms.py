@@ -48,7 +48,7 @@ plt.tight_layout()
 plt.savefig('histograms_infant.png')
 plt.show()
 
-fig, axes = plt.subplots(4, 2, figsize=(15, 20))
+fig, axes = plt.subplots(2, 4, figsize=(20, 15))
 axes = axes.flatten()
 
 for i, param in enumerate(parameters):
