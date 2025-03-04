@@ -1,4 +1,4 @@
-from data import *
+    from data import *
 from sklearn.preprocessing import StandardScaler
 
 D_np = D_clean.to_numpy() # convert to numpy arrays

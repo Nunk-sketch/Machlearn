@@ -47,4 +47,5 @@ plt.xlabel("PC{0}".format(i + 1))
 plt.ylabel("PC{0}".format(j + 1))
 
 # Output result to screen
+# plt.save("PCA_plot_new.png")
 plt.show()

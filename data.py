@@ -27,6 +27,10 @@ maleinfo = D_male.describe()
 femaleinfo = D_female.describe()
 infantinfo = D_infant.describe()
 datainfo = D.describe()
+# Convert datainfo to LaTeX format
+datainfo_latex = datainfo.to_latex()
+print(datainfo_latex)
+
 
 parameters = D.columns[1:]
 C = len(D.columns) - 1 # amount of attributes (8)
