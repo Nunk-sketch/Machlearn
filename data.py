@@ -30,7 +30,10 @@ datainfo = D.describe()
 # Convert datainfo to LaTeX format
 datainfo_latex = datainfo.to_latex()
 
-
+D['Sex'] = D['Sex'].map({'M': 1, 'F': 2, 'I': 3})
+D_male['Sex'] = D_male['Sex'].map({'M': 1, 'F': 2, 'I': 3})
+D_female['Sex'] = D_female['Sex'].map({'M': 1, 'F': 2, 'I': 3})
+D_infant['Sex'] = D_infant['Sex'].map({'M': 1, 'F': 2, 'I': 3})
 
 parameters = D.columns[1:]
 C = len(D.columns) - 1 # amount of attributes (8)

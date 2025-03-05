@@ -1,4 +1,4 @@
-    from data import *
+from data import *
 from sklearn.preprocessing import StandardScaler
 
 D_np = D_clean.to_numpy() # convert to numpy arrays
@@ -36,6 +36,7 @@ plt.xlabel('Principal components')
 plt.legend(["Individual", "Cumulative", "Threshold"])
 plt.tight_layout()
 plt.grid()
+plt.savefig('variance_explained.png')
 plt.show()
 
 # Plot classifications
@@ -53,4 +54,5 @@ plt.ylabel('Principal Component 2')
 plt.title('PCA of Abalone dataset')
 plt.colorbar(scatter, label='Number of Rings')
 plt.grid()
+plt.savefig('pca-graph.png')
 plt.show()
