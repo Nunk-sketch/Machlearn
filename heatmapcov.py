@@ -21,7 +21,7 @@ variable_names = D_clean.columns
 plt.figure(figsize=(10, 8))
 sns.heatmap(cov, annot=False, cmap='coolwarm', linewidths=0.5, xticklabels=variable_names, yticklabels=variable_names)
 
-plt.title("Heatmap over covariance i abalone-datasættet")
+plt.title("Heatmap over covariance in abalone-dataset")
 plt.savefig('heatmapcovall.png')
 
 # Vis plot
@@ -51,20 +51,20 @@ cov_infant = np.cov(D_infant_standardized, rowvar=False)
 # Plot heatmap for D_male
 plt.figure(figsize=(10, 8))
 sns.heatmap(cov_male, annot=False, cmap='coolwarm', linewidths=0.5, xticklabels=variable_names, yticklabels=variable_names)
-plt.title("Heatmap over covariance i abalone-datasættet (Male)")
+plt.title("Heatmap over covariance in abalone-dataset (Male)")
 plt.savefig('heatmapcov_male.png')
 plt.show()
 
 # Plot heatmap for D_female
 plt.figure(figsize=(10, 8))
 sns.heatmap(cov_female, annot=False, cmap='coolwarm', linewidths=0.5, xticklabels=variable_names, yticklabels=variable_names)
-plt.title("Heatmap over covariance i abalone-datasættet (Female)")
+plt.title("Heatmap over covariance in abalone-dataset (Female)")
 plt.savefig('heatmapcov_female.png')
 plt.show()
 
 # Plot heatmap for D_infant
 plt.figure(figsize=(10, 8))
 sns.heatmap(cov_infant, annot=False, cmap='coolwarm', linewidths=0.5, xticklabels=variable_names, yticklabels=variable_names)
-plt.title("Heatmap over covariance i abalone-datasættet (Infant)")
+plt.title("Heatmap over covariance in abalone-dataset (Infant)")
 plt.savefig('heatmapcov_infant.png')
 plt.show()
