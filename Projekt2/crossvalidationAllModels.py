@@ -7,7 +7,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import MultinomialNB
 
-# Define parameter grids for each model
+# Define parameter grids for models
 param_grids = {
     "ANN": [0.001, 0.01, 0.1],           # λ = alpha
     "CT": [2, 4, 6, 8],                  # max_depth
