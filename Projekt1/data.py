@@ -42,3 +42,11 @@ print(classDict)
 
 y = np.asarray([classDict[param] for param in parameters]) # indices of the parameters
 print(y)
+
+
+# train-test split
+# Split the data into training and test sets (50% each)
+Abalone_training = D.sample(frac=0.5, random_state=1) # 50% of the data for training
+Abalone_test = D.drop(Abalone_training.index) # 50% of the data for testing
+Abalone_training.to_csv('abalone_training.csv', sep=';', index=False)
+Abalone_test.to_csv('abalone_test.csv', sep=';', index=False)
