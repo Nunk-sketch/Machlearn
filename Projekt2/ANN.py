@@ -8,6 +8,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.neural_network import MLPClassifier
 
+
 model_ann = MLPClassifier(hidden_layer_sizes=(200),alpha = 0.001, max_iter = 5000)
 model_ann.fit(x_train, y_train)
 

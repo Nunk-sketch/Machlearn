@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import sklearn as sk
 from sklearn.metrics import accuracy_score
 from sklearn.tree import DecisionTreeClassifier
+
 #classification tree
 model_ct = DecisionTreeClassifier(max_depth = 4)
 model_ct.fit(x_train,y_train)
