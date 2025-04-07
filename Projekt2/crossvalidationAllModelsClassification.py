@@ -27,9 +27,9 @@ outer_cv = KFold(n_splits=outer_folds, shuffle=True, random_state=42)
 for model_name in models:
     print(f"\n=== Model: {model_name} ===")
     
-    for fold_idx, (train_idx, test_idx) in enumerate(outer_cv.split(x_train_mat)):
-        x_train_outer, x_test_outer = x_train_mat[train_idx], x_train_mat[test_idx]
-        y_train_outer, y_test_outer = y_train_mat[train_idx], y_train_mat[test_idx]
+    for fold_idx, (train_idx, test_idx) in enumerate(outer_cv.split(x_train_mat_clas)):
+        x_train_outer, x_test_outer = x_train_mat_clas[train_idx], x_train_mat_clas[test_idx]
+        y_train_outer, y_test_outer = y_train_mat_clas[train_idx], y_train_mat_clas[test_idx]
 
         inner_cv = KFold(n_splits=inner_folds, shuffle=True, random_state=1)
         param_errors = []
