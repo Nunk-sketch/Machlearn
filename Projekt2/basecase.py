@@ -11,6 +11,5 @@ y_pred = np.full_like(y_test_clas, fill_value= most_common_class)  # Fill y_pred
 
 error_rate = np.mean(y_pred != y_test_clas)  # Calculate the error rate
 
-# the error rate i 0.64, which is high, but this is the base case
-# which we will use to compare with the other models
-
+print(f"Error rate: {error_rate:.2f}")  # Print error rate
+print(f"Most common class: {most_common_class}")  # Print most common class
