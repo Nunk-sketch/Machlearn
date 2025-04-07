@@ -39,11 +39,6 @@ x_test_mat_clas = x_test_clas.values
 y_train_mat_clas = y_train_clas.values
 y_test_mat_clas = y_test_clas.values
 
-# feature matrix
-x_train_mat = x_train.values
-x_test_mat = x_test.values
-y_train_mat = y_train.values
-y_test_mat = y_test.values
 # convert to feature matrix (regression)
 x_mat_reg = x_reg.values
 x_train_mat_reg = x_train_reg.values
