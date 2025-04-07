@@ -8,7 +8,7 @@ D_train = pd.read_csv('../abalone/abalone_training.csv', sep=';')
 
 attributeNames = D.columns.drop("Sex")
 
-#most common sex in the training set
+#most common sex in the training set is the aim of this classification
 
 sex_counts_test = D_test['Sex'].value_counts()
 sex_counts_train = D_train["Sex"].value_counts()
@@ -39,6 +39,11 @@ x_test_mat_clas = x_test_clas.values
 y_train_mat_clas = y_train_clas.values
 y_test_mat_clas = y_test_clas.values
 
+# feature matrix
+x_train_mat = x_train.values
+x_test_mat = x_test.values
+y_train_mat = y_train.values
+y_test_mat = y_test.values
 # convert to feature matrix (regression)
 x_mat_reg = x_reg.values
 x_train_mat_reg = x_train_reg.values
