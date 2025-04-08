@@ -2,9 +2,9 @@ import pandas as pd
 
 #'M': 1, 'F': 2, 'I': 3
 
-D = pd.read_csv('abalone/abalone.data', sep=';')
-D_test = pd.read_csv('abalone/abalone_test.csv', sep=';')
-D_train = pd.read_csv('abalone/abalone_training.csv', sep=';')
+D = pd.read_csv('../abalone/abalone.data', sep=';')
+D_test = pd.read_csv('../abalone/abalone_test.csv', sep=';')
+D_train = pd.read_csv('../abalone/abalone_training.csv', sep=';')
 
 attributeNames = D.columns.drop("Sex")
 
@@ -31,13 +31,14 @@ D['AgeClass'] = D['Rings'].apply(classify_age)
 D_test['AgeClass'] = D_test['Rings'].apply(classify_age)
 D_train['AgeClass'] = D_train['Rings'].apply(classify_age)
 
-
+D['AgeClass'] = D['AgeClass'].map({'child': 0, 'adult': 1, 'old': 2})
+D['Sex'] = D['Sex'].map({'M': 1, 'F': 2, 'I': 3})
 D_test['AgeClass'] = D_test['AgeClass'].map({'child': 0, 'adult': 1, 'old': 2})
 D_train['AgeClass'] = D_train['AgeClass'].map({'child': 0, 'adult': 1, 'old': 2})
 
 
 x_clas = D.drop(columns=["Rings", "AgeClass"])
-x_reg = D.drop(columns=['Rings', "Sex"]) #TODO Rewrite sex as number
+x_reg = D.drop(columns=['Rings', "AgeClass"])
 
 y_clas = D['AgeClass']
 y_reg = D['Rings']
