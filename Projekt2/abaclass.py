@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
 #'M': 1, 'F': 2, 'I': 3
 
@@ -26,6 +28,14 @@ def classify_age(rings):
     else:
         return 'old'
 
+def normalize(X):
+    mean = np.mean(X)
+    std = np.std(X)
+    X_norm = (X - mean) / std
+    return X_norm
+
+def dataframe_to_numpy(df):
+    return df.values
 # Apply the classification to the datasets
 D['AgeClass'] = D['Rings'].apply(classify_age)
 D_test['AgeClass'] = D_test['Rings'].apply(classify_age)
@@ -44,15 +54,27 @@ y_clas = D['AgeClass']
 y_reg = D['Rings']
 
 # Separate the data into inputs (x_data) and output (y_data)
-x_train_clas = D_train.drop(columns=['Rings',"AgeClass"])  # Drop the 'Sex' column to get the inputs
+x_train_clas = (D_train.drop(columns=['Rings',"AgeClass"]))  # Drop the 'Sex' column to get the inputs
 x_train_reg = D_train.drop(columns=['Rings', 'Sex'])
-y_train_clas = D_train['AgeClass']  # Use the 'Sex' column as the output
+y_train_clas = (D_train['AgeClass'] ) # Use the 'Sex' column as the output
 y_train_reg = D_train['Rings']  # Use the 'Rings' column as the output
 
-x_test_clas = D_test.drop(columns=["Rings","AgeClass"])
+x_test_clas = (D_test.drop(columns=["Rings","AgeClass"]))
 x_test_reg = D_test.drop(columns=["Rings", "Sex"])
-y_test_clas = D_test["AgeClass"]
+y_test_clas = (D_test["AgeClass"])
 y_test_reg = D_test["Rings"]
+
+# x_train_clas = dataframe_to_numpy(D_train.drop(columns=['Rings', "AgeClass"]))  # Drop the 'Sex' column to get the inputs
+# x_train_clas = normalize(x_train_clas)
+
+# y_train_clas = dataframe_to_numpy(D_train['AgeClass'])  # Use the 'AgeClass' column as the output
+# y_train_clas = normalize(y_train_clas)
+
+# x_test_clas = dataframe_to_numpy(D_test.drop(columns=["Rings", "AgeClass"]))
+# x_test_clas = normalize(x_test_clas)
+
+# y_test_clas = dataframe_to_numpy(D_test["AgeClass"])
+# y_test_clas = normalize(y_test_clas)
 
 # convert to feature matrix (classification)
 x_train_mat_clas = x_train_clas.values
