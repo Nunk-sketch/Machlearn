@@ -8,4 +8,4 @@ model_ann.fit(x_train_clas, y_train_clas)
 
 ypred_ann = model_ann.predict(x_test_clas)
 error_rate_ann = 1 - accuracy_score(y_test_clas, ypred_ann)
-print(f"Error rate: {error_rate_ann:.2f}") # Print error rate 13
+print(f"Error rate: {error_rate_ann:.3f}") # Print error rate 13
