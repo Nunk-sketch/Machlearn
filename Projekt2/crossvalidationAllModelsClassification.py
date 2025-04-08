@@ -8,6 +8,9 @@ from sklearn.linear_model import LogisticRegression
 import numpy as np
 from abaclass import *
 import json
+from sklearn.dummy import DummyClassifier
+
+
 # Define parameter grids for models
 param_grids = {
     "ANN": {"alpha": [0.001, 0.01, 0.1, 1, 2, 4]},
@@ -15,11 +18,12 @@ param_grids = {
     "KNN": {"n_neighbors": [1, 3, 5, 7, 9, 11]},
     "NB": {"alpha": [0.1, 0.5, 1.0, 2.0, 3, 4]},
     "MN": {"C": [1 / val for val in [0.001, 0.01, 0.1, 1, 2, 4]]},
+    "BC": {"strategy": ["most_frequent"]}  # DummyClassifier for baseline
 }
 
 # Storage
-outer_folds = 5
-models = ["ANN", "CT", "KNN", "NB", "MN"]
+outer_folds = 10  # Increased the number of outer folds
+models = ["ANN", "CT", "KNN", "NB", "MN", "BC"]
 results = {model: [] for model in models}
 best_params = {model: [] for model in models}
 
@@ -37,6 +41,8 @@ def initialize_model(model_name, params):
         return MultinomialNB(**params)
     elif model_name == "MN":
         return LogisticRegression(solver='lbfgs', max_iter=1000, **params)
+    elif model_name == "BC":
+        return DummyClassifier(**params)
 
 # Outer cross-validation
 for model_name in models:

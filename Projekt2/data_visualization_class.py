@@ -23,3 +23,4 @@ val_loss_history = np.load("val_loss_history.npy", allow_pickle=True)
 
 visualize_loss(train_loss_history, val_loss_history)
 
+

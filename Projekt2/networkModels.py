@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
+from sklearn.model_selection import KFold
 
 
 # test for a fully connected network
@@ -84,131 +85,122 @@ import numpy as np
 
 class FCNN(nn.Module):
     def __init__(self):
-
         super(FCNN, self).__init__()
         self.net = nn.Sequential(
             nn.Linear(8, 64),  
-            nn.ReLU(),           # Activation function
+            nn.ReLU(),           
             nn.Linear(64, 128),  
-            nn.ReLU(),           # Activation function
+            nn.ReLU(),           
             nn.Linear(128, 64),   
-            nn.ReLU(),           # Activation function
+            nn.ReLU(),           
             nn.Linear(64, 8),
-            nn.ReLU(),           # Activation function
-            nn.Linear(8, 3),    # Output layer)
-            
+            nn.ReLU(),           
+            nn.Linear(8, 3),    
         )
 
-    def forward(self,x):
+    def forward(self, x):
         return self.net(x)
     
     def compute_loss(self, x, y):
-        """
-        Evaluate the loss of the model on the given data.
-
-        Parameters:
-        x (array-like): Input features.
-        y (array-like): Target labels.
-
-        Returns:
-        float: Computed loss.
-        """
-        # Convert the data to PyTorch tensors
         x_tensor = torch.tensor(x, dtype=torch.float32)
         y_tensor = torch.tensor(y, dtype=torch.long)
-
-        # Ensure the model is in evaluation mode
         self.eval()
-
-        # Define the loss function
         criterion = nn.CrossEntropyLoss()
-
-        # Compute the loss
         with torch.no_grad():
             outputs = self(x_tensor)
             loss = criterion(outputs, y_tensor)
-
         return loss.item()
 
-    def train_model(self, x_train, y_train, x_test, y_test, epochs=10, batch_size=32):
-        # Check and convert the data to numpy arrays if they are pandas DataFrames
+    def train_model(self, x_train, y_train, x_test, y_test, epochs=10, batch_size=32, use_cross_validation=False, cv_folds=5):
         if isinstance(x_train, pd.DataFrame):
             x_train = x_train.to_numpy()
-        if isinstance(y_train, pd.DataFrame) or isinstance(y_train, pd.Series):
+        if isinstance(y_train, (pd.DataFrame, pd.Series)):
             y_train = y_train.to_numpy()
         if isinstance(x_test, pd.DataFrame):
             x_test = x_test.to_numpy()
-        if isinstance(y_test, pd.DataFrame) or isinstance(y_test, pd.Series):
-            y_test = y_test.to_numpy()
-        if isinstance(x_train, pd.DataFrame):
-            x_train = x_train.to_numpy()
-        if isinstance(y_train, pd.DataFrame) or isinstance(y_train, pd.Series):
-            y_train = y_train.to_numpy()
-        if isinstance(x_test, pd.DataFrame):
-            x_test = x_test.to_numpy()
-        if isinstance(y_test, pd.DataFrame) or isinstance(y_test, pd.Series):
+        if isinstance(y_test, (pd.DataFrame, pd.Series)):
             y_test = y_test.to_numpy()
 
-        # Convert the data to PyTorch tensors
         x_train_tensor = torch.tensor(x_train, dtype=torch.float32)
         y_train_tensor = torch.tensor(y_train, dtype=torch.long)
         x_test_tensor = torch.tensor(x_test, dtype=torch.float32)
         y_test_tensor = torch.tensor(y_test, dtype=torch.long)
 
-        # Ensure target labels are within the valid range
-        num_classes = 3  # Update this if the number of classes changes
+        num_classes = 3
         if y_train_tensor.max() >= num_classes or y_test_tensor.max() >= num_classes:
             raise ValueError(f"Target labels must be in the range [0, {num_classes - 1}]. Found out-of-bounds labels.")
 
-        # Create a DataLoader for the training data
-        train_dataset = TensorDataset(x_train_tensor, y_train_tensor)
-        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        if use_cross_validation:
+            kf = KFold(n_splits=cv_folds, shuffle=True, random_state=42)
+            best_model_state = None
+            best_accuracy = 0
 
-        # Define the loss function and optimizer
-        criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(self.parameters(), lr=0.001)
-        loss_history = []
-        val_loss_history = []
+            for fold, (train_idx, val_idx) in enumerate(kf.split(x_train)):
+                print(f"Starting fold {fold + 1}/{cv_folds}")
+                x_train_fold, x_val_fold = x_train[train_idx], x_train[val_idx]
+                y_train_fold, y_val_fold = y_train[train_idx], y_train[val_idx]
 
-        # Training loop
-        for epoch in range(epochs):
-            total_loss = 0.0
-            self.train()  # Set the model to training mode
-            for inputs, labels in train_loader:
-                optimizer.zero_grad()
-                outputs = self(inputs)
-                loss = criterion(outputs, labels)
-                loss.backward()
-                optimizer.step()
-                total_loss += loss.item()
+                x_train_fold_tensor = torch.tensor(x_train_fold, dtype=torch.float32)
+                y_train_fold_tensor = torch.tensor(y_train_fold, dtype=torch.long)
+                x_val_fold_tensor = torch.tensor(x_val_fold, dtype=torch.float32)
+                y_val_fold_tensor = torch.tensor(y_val_fold, dtype=torch.long)
 
-            print(f'Epoch [{epoch + 1}/{epochs}], Loss: {total_loss / len(train_loader):.4f}')
+                train_dataset = TensorDataset(x_train_fold_tensor, y_train_fold_tensor)
+                train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
-            # Save training loss
-            avg_train_loss = total_loss / len(train_loader)
-            loss_history.append(avg_train_loss)
+                criterion = nn.CrossEntropyLoss()
+                optimizer = optim.Adam(self.parameters(), lr=0.001)
 
-            # Evaluate the model on the test set
-            self.eval()  # Set the model to evaluation mode
+                for epoch in range(epochs):
+                    self.train()
+                    for inputs, labels in train_loader:
+                        optimizer.zero_grad()
+                        outputs = self(inputs)
+                        loss = criterion(outputs, labels)
+                        loss.backward()
+                        optimizer.step()
+
+                self.eval()
+                with torch.no_grad():
+                    val_outputs = self(x_val_fold_tensor)
+                    _, predicted = torch.max(val_outputs.data, 1)
+                    accuracy = (predicted == y_val_fold_tensor).sum().item() / len(y_val_fold_tensor) * 100
+
+                print(f"Fold {fold + 1} Validation Accuracy: {accuracy:.2f}%")
+                if accuracy > best_accuracy:
+                    best_accuracy = accuracy
+                    best_model_state = self.state_dict()
+
+            print(f"Best Cross-Validation Accuracy: {best_accuracy:.2f}%")
+            self.load_state_dict(best_model_state)
+
+        else:
+            train_dataset = TensorDataset(x_train_tensor, y_train_tensor)
+            train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+
+            criterion = nn.CrossEntropyLoss()
+            optimizer = optim.Adam(self.parameters(), lr=0.001)
+
+            for epoch in range(epochs):
+                self.train()
+                total_loss = 0.0
+                for inputs, labels in train_loader:
+                    optimizer.zero_grad()
+                    outputs = self(inputs)
+                    loss = criterion(outputs, labels)
+                    loss.backward()
+                    optimizer.step()
+                    total_loss += loss.item()
+
+                print(f'Epoch [{epoch + 1}/{epochs}], Loss: {total_loss / len(train_loader):.4f}')
+
+            self.eval()
             with torch.no_grad():
                 test_outputs = self(x_test_tensor)
-                val_loss = criterion(test_outputs, y_test_tensor).item()
                 _, predicted = torch.max(test_outputs.data, 1)
                 accuracy = (predicted == y_test_tensor).sum().item() / len(y_test_tensor) * 100
 
-            print(f'Validation Loss: {val_loss:.4f}')
-            print(f'Validation Accuracy: {accuracy:.2f}%')
-
-            # Save validation loss
-            val_loss_history.append(val_loss)
-
-        # Save the model and loss history
-        print("Saving model and loss.")
-        torch.save(self.state_dict(), "FCNN_model_raw.pth")
-        np.save("loss_history.npy", np.array(loss_history, dtype=np.float32))
-        np.save("val_loss_history.npy", np.array(val_loss_history, dtype=np.float32))
-        print("Done saving model and loss.")
-    
+            print(f'Test Accuracy: {accuracy:.2f}%')
 
     def predict(self, x):
         x_tensor = torch.tensor(x, dtype=torch.float32)
@@ -216,57 +208,3 @@ class FCNN(nn.Module):
             outputs = self(x_tensor)
             _, predicted = torch.max(outputs.data, 1)
         return predicted.numpy()
-    
-    def fit(self, X, y, epochs=10, batch_size=32):
-        """
-        Fit the model to the provided data.
-
-        Parameters:
-        X (array-like): Input features.
-        y (array-like): Target labels.
-        epochs (int): Number of epochs to train the model.
-        batch_size (int): Batch size for training.
-
-        Returns:
-        self: Trained model.
-        """
-        # Check and convert the data to numpy arrays if they are pandas DataFrames
-        if isinstance(X, pd.DataFrame):
-            X = X.to_numpy()
-        if isinstance(y, pd.DataFrame) or isinstance(y, pd.Series):
-            y = y.to_numpy()
-
-        # Convert the data to PyTorch tensors
-        X_tensor = torch.tensor(X, dtype=torch.float32)
-        y_tensor = torch.tensor(y, dtype=torch.long)
-
-        # Ensure target labels are within the valid range
-        num_classes = 3  # Update this if the number of classes changes
-        if y_tensor.max() >= num_classes:
-            raise ValueError(f"Target labels must be in the range [0, {num_classes - 1}]. Found out-of-bounds labels.")
-
-        # Create a DataLoader for the training data
-        dataset = TensorDataset(X_tensor, y_tensor)
-        data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-
-        # Define the loss function and optimizer
-        criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(self.parameters(), lr=0.001)
-
-        # Training loop
-        for epoch in range(epochs):
-            total_loss = 0.0
-            self.train()  # Set the model to training mode
-            for inputs, labels in data_loader:
-                optimizer.zero_grad()
-                outputs = self(inputs)
-                loss = criterion(outputs, labels)
-                loss.backward()
-                optimizer.step()
-                total_loss += loss.item()
-
-            print(f'Epoch [{epoch + 1}/{epochs}], Loss: {total_loss / len(data_loader):.4f}')
-
-        return self
-    
-
