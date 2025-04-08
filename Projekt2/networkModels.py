@@ -102,7 +102,7 @@ class FCNN(nn.Module):
     def forward(self,x):
         return self.net(x)
     
-    def evaluate_loss(self, x, y):
+    def compute_loss(self, x, y):
         """
         Evaluate the loss of the model on the given data.
 
@@ -132,6 +132,14 @@ class FCNN(nn.Module):
 
     def train_model(self, x_train, y_train, x_test, y_test, epochs=10, batch_size=32):
         # Check and convert the data to numpy arrays if they are pandas DataFrames
+        if isinstance(x_train, pd.DataFrame):
+            x_train = x_train.to_numpy()
+        if isinstance(y_train, pd.DataFrame) or isinstance(y_train, pd.Series):
+            y_train = y_train.to_numpy()
+        if isinstance(x_test, pd.DataFrame):
+            x_test = x_test.to_numpy()
+        if isinstance(y_test, pd.DataFrame) or isinstance(y_test, pd.Series):
+            y_test = y_test.to_numpy()
         if isinstance(x_train, pd.DataFrame):
             x_train = x_train.to_numpy()
         if isinstance(y_train, pd.DataFrame) or isinstance(y_train, pd.Series):
