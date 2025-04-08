@@ -102,6 +102,33 @@ class FCNN(nn.Module):
     def forward(self,x):
         return self.net(x)
     
+    def evaluate_loss(self, x, y):
+        """
+        Evaluate the loss of the model on the given data.
+
+        Parameters:
+        x (array-like): Input features.
+        y (array-like): Target labels.
+
+        Returns:
+        float: Computed loss.
+        """
+        # Convert the data to PyTorch tensors
+        x_tensor = torch.tensor(x, dtype=torch.float32)
+        y_tensor = torch.tensor(y, dtype=torch.long)
+
+        # Ensure the model is in evaluation mode
+        self.eval()
+
+        # Define the loss function
+        criterion = nn.CrossEntropyLoss()
+
+        # Compute the loss
+        with torch.no_grad():
+            outputs = self(x_tensor)
+            loss = criterion(outputs, y_tensor)
+
+        return loss.item()
 
     def train_model(self, x_train, y_train, x_test, y_test, epochs=10, batch_size=32):
         # Check and convert the data to numpy arrays if they are pandas DataFrames
@@ -170,13 +197,10 @@ class FCNN(nn.Module):
         # Save the model and loss history
         print("Saving model and loss.")
         torch.save(self.state_dict(), "FCNN_model_raw.pth")
-        np.save("loss_history.npy", np.array(loss_history, dtype=object), allow_pickle=True)
-        np.save("val_loss_history.npy", np.array(val_loss_history, dtype=object), allow_pickle=True)
+        np.save("loss_history.npy", np.array(loss_history, dtype=np.float32))
+        np.save("val_loss_history.npy", np.array(val_loss_history, dtype=np.float32))
         print("Done saving model and loss.")
     
-        # Rename the method in case it is called elsewhere
-        def training(self, *args, **kwargs):
-            raise AttributeError("The method 'training' has been renamed to 'train_model'. Please update your code.")
 
     def predict(self, x):
         x_tensor = torch.tensor(x, dtype=torch.float32)
@@ -184,5 +208,57 @@ class FCNN(nn.Module):
             outputs = self(x_tensor)
             _, predicted = torch.max(outputs.data, 1)
         return predicted.numpy()
+    
+    def fit(self, X, y, epochs=10, batch_size=32):
+        """
+        Fit the model to the provided data.
+
+        Parameters:
+        X (array-like): Input features.
+        y (array-like): Target labels.
+        epochs (int): Number of epochs to train the model.
+        batch_size (int): Batch size for training.
+
+        Returns:
+        self: Trained model.
+        """
+        # Check and convert the data to numpy arrays if they are pandas DataFrames
+        if isinstance(X, pd.DataFrame):
+            X = X.to_numpy()
+        if isinstance(y, pd.DataFrame) or isinstance(y, pd.Series):
+            y = y.to_numpy()
+
+        # Convert the data to PyTorch tensors
+        X_tensor = torch.tensor(X, dtype=torch.float32)
+        y_tensor = torch.tensor(y, dtype=torch.long)
+
+        # Ensure target labels are within the valid range
+        num_classes = 3  # Update this if the number of classes changes
+        if y_tensor.max() >= num_classes:
+            raise ValueError(f"Target labels must be in the range [0, {num_classes - 1}]. Found out-of-bounds labels.")
+
+        # Create a DataLoader for the training data
+        dataset = TensorDataset(X_tensor, y_tensor)
+        data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+        # Define the loss function and optimizer
+        criterion = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(self.parameters(), lr=0.001)
+
+        # Training loop
+        for epoch in range(epochs):
+            total_loss = 0.0
+            self.train()  # Set the model to training mode
+            for inputs, labels in data_loader:
+                optimizer.zero_grad()
+                outputs = self(inputs)
+                loss = criterion(outputs, labels)
+                loss.backward()
+                optimizer.step()
+                total_loss += loss.item()
+
+            print(f'Epoch [{epoch + 1}/{epochs}], Loss: {total_loss / len(data_loader):.4f}')
+
+        return self
     
 
