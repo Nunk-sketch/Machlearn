@@ -5,7 +5,7 @@ from scipy.stats import ttest_ind
 from abaclass import *
 
 # Load the JSON file
-with open("crossvalidation_results.json", "r") as file:
+with open("crossvalidation_results2.json", "r") as file:
     data = json.load(file)
 
     # Extract errors for each model
@@ -83,8 +83,8 @@ with open("crossvalidation_results.json", "r") as file:
     print("\n=== Summary ===")
     for model in models:
         print(f"\n--- {model} ---")
-        print(f"Mean error: {np.mean(errors[model]):.3f}")
-        print(f"Std. error: {np.std(errors[model]):.3f}")
+        print(f"Mean error: {np.mean(errors[model]):.4f}")
+        print(f"Std. error: {np.std(errors[model]):.4f}")
         # Best params are not defined; remove or replace with actual logic if available
         print(f"Best params: Not available")
         print(f"Confidence Interval: {analysis_results[model]['confidence_interval']}")
@@ -94,9 +94,9 @@ with open("crossvalidation_results.json", "r") as file:
         # Remove these lines or replace with appropriate logic if needed
 
 
-        print(f"Bonferroni alpha level: {bonferroni_alpha:.3f}")
+        print(f"Bonferroni alpha level: {bonferroni_alpha:.4f}")
 # Determine the best model based on the lowest mean error
 best_model_name = min(analysis_results, key=lambda model: analysis_results[model]["mean_error"])
 
-print(f"\nThe best model is: {best_model_name} with mean error {np.mean(errors[best_model_name]):.3f}")
+print(f"\nThe best model is: {best_model_name} with mean error {np.mean(errors[best_model_name]):.4f}")
      

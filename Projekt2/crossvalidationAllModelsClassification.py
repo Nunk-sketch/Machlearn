@@ -22,14 +22,14 @@ param_grids = {
 }
 
 # Storage
-outer_folds = 10  # Increased the number of outer folds
+outer_folds = 10
 models = ["ANN", "CT", "KNN", "NB", "MN", "BC"]
 results = {model: [] for model in models}
 best_params = {model: [] for model in models}
 
 outer_cv = KFold(n_splits=outer_folds, shuffle=True, random_state=42)
 
-# Helper function to initialize models
+
 def initialize_model(model_name, params):
     if model_name == "ANN":
         return MLPClassifier(hidden_layer_sizes=(100,), max_iter=1000, **params)
@@ -48,15 +48,15 @@ def initialize_model(model_name, params):
 for model_name in models:
     print(f"\n=== Model: {model_name} ===")
     
-    for fold_idx, (train_idx, test_idx) in enumerate(outer_cv.split(x_train_mat_clas)):
+    for fold_idx, (train_idx, test_idx) in enumerate(outer_cv.split(x_clas_mat)):
         print(f"Processing fold {fold_idx + 1}/{outer_folds} for model {model_name}...")
         
-        x_train_outer, x_test_outer = x_train_mat_clas[train_idx], x_train_mat_clas[test_idx]
-        y_train_outer, y_test_outer = y_train_mat_clas[train_idx], y_train_mat_clas[test_idx]
+        x_train_outer, x_test_outer = x_clas_mat[train_idx], x_clas_mat[test_idx]
+        y_train_outer, y_test_outer = y_clas_mat[train_idx], y_clas_mat[test_idx]
 
         # Use GridSearchCV for hyperparameter tuning
         model = initialize_model(model_name, {})
-        grid_search = GridSearchCV(model, param_grids[model_name], cv=5, scoring='accuracy', n_jobs=-1)
+        grid_search = GridSearchCV(model, param_grids[model_name], cv=10, scoring='accuracy', n_jobs=-1) # inner folds: 
         grid_search.fit(x_train_outer, y_train_outer)
 
         best_params[model_name].append(grid_search.best_params_)
@@ -76,7 +76,7 @@ for model in models:
     print(f"Best params: {best_params[model]}")
 
 best_model_name = min(results, key=lambda k: np.mean(results[k]))
-print(f"\nThe best model is: {best_model_name} with mean error {np.mean(results[best_model_name]):.3f}")
+print(f"\nThe best model is: {best_model_name} with mean error {np.mean(results[best_model_name]):.4f}")
 
 # Save results to a JSON file
 output_data = {
@@ -88,8 +88,22 @@ output_data = {
         "std_error": np.std(results[best_model_name]),
     },
 }
+# Determine the overall best parameters for each model
+overall_best_params = {}
+for model in models:
+    param_counts = {}
+    for params in best_params[model]:
+        param_tuple = tuple(params.items())
+        param_counts[param_tuple] = param_counts.get(param_tuple, 0) + 1
+    overall_best_params[model] = max(param_counts, key=param_counts.get)
 
-output_file = "crossvalidation_results.json"
+# Convert tuples back to dictionaries for readability
+overall_best_params = {model: dict(params) for model, params in overall_best_params.items()}
+
+# Add overall best parameters to the output data
+output_data["overall_best_params"] = overall_best_params
+
+output_file = "crossvalidation_results2.json"
 with open(output_file, "w") as f:
     json.dump(output_data, f, indent=4)
 
