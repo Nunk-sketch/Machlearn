@@ -1,6 +1,7 @@
 from sklearn.neural_network import MLPRegressor
 
 from abaclass import *
+from sklearn.model_selection import cross_val_score, KFold
 
 regressor = MLPRegressor(hidden_layer_sizes=(200), alpha=0.001, max_iter=5000)
 regressor.fit(x_train_reg, y_train_reg) # Train on training data
