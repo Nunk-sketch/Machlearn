@@ -1,7 +1,8 @@
-import numpy as np
-import scipy.stats as stats
 import json
+
+import scipy.stats as stats
 from scipy.stats import ttest_ind
+
 from abaclass import *
 
 # Load the JSON file

@@ -1,9 +1,6 @@
-from abaclass import *
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import statsmodels.api as sm
 from collections import Counter
+
+from abaclass import *
 
 most_common_class = Counter(y_train_clas).most_common(1)[0][0]
 

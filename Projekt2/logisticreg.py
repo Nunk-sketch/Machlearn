@@ -1,12 +1,7 @@
-from abaclass import *
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import statsmodels.api as sm
-import sklearn as sk
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import KFold
+
+from abaclass import *
 
 lambda_val = 0.001 #lambda value for regularization
 C_val = 1/lambda_val # C value for regularization
