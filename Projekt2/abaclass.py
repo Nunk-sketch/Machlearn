@@ -3,9 +3,9 @@ import pandas as pd
 
 #'M': 1, 'F': 2, 'I': 3
 
-D = pd.read_csv('../abalone/abalone.data', sep=';')
-D_test = pd.read_csv('../abalone/abalone_test.csv', sep=';')
-D_train = pd.read_csv('../abalone/abalone_training.csv', sep=';')
+D = pd.read_csv('abalone/abalone.data', sep=';')
+D_test = pd.read_csv('abalone/abalone_test.csv', sep=';')
+D_train = pd.read_csv('abalone/abalone_training.csv', sep=';')
 
 #most common sex in the training set is the aim of this classification
 
@@ -72,7 +72,8 @@ y_test_reg = D_test["Rings"]
 
 # y_test_clas = dataframe_to_numpy(D_test["AgeClass"])
 # y_test_clas = normalize(y_test_clas)
-
+x_clas_mat = x_clas.values
+y_clas_mat = y_clas.values
 # convert to feature matrix (classification)
 x_train_mat_clas = x_train_clas.values
 x_test_mat_clas = x_test_clas.values

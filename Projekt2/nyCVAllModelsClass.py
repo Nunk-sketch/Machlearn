@@ -1,15 +1,15 @@
-import json
-
-from sklearn.dummy import DummyClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
 from sklearn.model_selection import KFold, GridSearchCV
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
 from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
-
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import LogisticRegression
+import numpy as np
 from abaclass import *
+import json
+from sklearn.dummy import DummyClassifier
+from imblearn.under_sampling import RandomUnderSampler
 
 # Define parameter grids for models
 param_grids = {
@@ -53,6 +53,13 @@ for model_name in models:
         
         x_train_outer, x_test_outer = x_clas_mat[train_idx], x_clas_mat[test_idx]
         y_train_outer, y_test_outer = y_clas_mat[train_idx], y_clas_mat[test_idx]
+        min_class_count = min(np.bincount(y_train_outer))
+        undersampler = RandomUnderSampler(
+            sampling_strategy={0: min(300, min_class_count), 1: min(300, min_class_count), 2: min(300, min_class_count)},  # Adjusted to avoid exceeding class counts
+            random_state=42
+        )
+        x_train_resampled, y_train_resampled = undersampler.fit_resample(x_train_outer, y_train_outer)
+
 
         # Use GridSearchCV for hyperparameter tuning
         model = initialize_model(model_name, {})
@@ -103,7 +110,7 @@ overall_best_params = {model: dict(params) for model, params in overall_best_par
 # Add overall best parameters to the output data
 output_data["overall_best_params"] = overall_best_params
 
-output_file = "crossvalidation_results2.json"
+output_file = "crossvalidation_resultsNY2.json"
 with open(output_file, "w") as f:
     json.dump(output_data, f, indent=4)
 
