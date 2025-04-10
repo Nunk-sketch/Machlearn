@@ -54,9 +54,9 @@ y_clas = D['AgeClass']
 y_reg = D['Rings']
 
 # Separate the data into inputs (x_data) and output (y_data)
-x_train_clas = (D_train.drop(columns=['Rings',"AgeClass"]))  # Drop the 'Sex' column to get the inputs
+x_train_clas = (D_train.drop(columns=['Rings',"AgeClass"]))  # Drop the 'Sex' and "AgeClass" column to get the inputs
 x_train_reg = D_train.drop(columns=['Rings', 'Sex'])
-y_train_clas = (D_train['AgeClass'] ) # Use the 'Sex' column as the output
+y_train_clas = (D_train['AgeClass'] ) # Use the 'AgeClass' column as the output
 y_train_reg = D_train['Rings']  # Use the 'Rings' column as the output
 
 x_test_clas = (D_test.drop(columns=["Rings","AgeClass"]))

@@ -10,6 +10,8 @@ from abaclass import *
 import json
 from sklearn.dummy import DummyClassifier
 
+# from sklearn.preprocessing import MinMaxScaler
+from time import time
 
 # Define parameter grids for models
 param_grids = {
@@ -48,13 +50,14 @@ def initialize_model(model_name, params):
 for model_name in models:
     print(f"\n=== Model: {model_name} ===")
     
+    start_time = time()
     for fold_idx, (train_idx, test_idx) in enumerate(outer_cv.split(x_clas_mat)):
         print(f"Processing fold {fold_idx + 1}/{outer_folds} for model {model_name}...")
         
         x_train_outer, x_test_outer = x_clas_mat[train_idx], x_clas_mat[test_idx]
         y_train_outer, y_test_outer = y_clas_mat[train_idx], y_clas_mat[test_idx]
 
-        # Use GridSearchCV for hyperparameter tuning
+        # Use GridSearchCV for tuning
         model = initialize_model(model_name, {})
         grid_search = GridSearchCV(model, param_grids[model_name], cv=10, scoring='accuracy', n_jobs=-1) # inner folds: 
         grid_search.fit(x_train_outer, y_train_outer)
@@ -66,16 +69,20 @@ for model_name in models:
         results[model_name].append(error)
 
         print(f"Fold {fold_idx + 1}: Best param = {best_params[model_name][-1]}, Error = {error:.3f}")
+    elapsed_time = time() - start_time  # End timer for the model
+    print(f"Model {model_name} completed in {elapsed_time:.2f} seconds.")
+   
 
-# Summary
 print("\n=== Summary ===")
 for model in models:
     print(f"\n--- {model} ---")
-    print(f"Mean error: {np.mean(results[model]):.3f}")
-    print(f"Std. error: {np.std(results[model]):.3f}")
+    numeric_results = [res for res in results[model] if isinstance(res, (int, float))]
+    print(f"Mean error: {np.mean(numeric_results):.3f}")
+    print(f"Std. error: {np.std(numeric_results):.3f}")
     print(f"Best params: {best_params[model]}")
-
-best_model_name = min(results, key=lambda k: np.mean(results[k]))
+best_model_name = min(results, key=lambda k: np.mean([res for res in results[k] if isinstance(res, (int, float))]))
+best_model_numeric_results = [res for res in results[best_model_name] if isinstance(res, (int, float))]
+print(f"\nThe best model is: {best_model_name} with mean error {np.mean(best_model_numeric_results):.4f}")
 print(f"\nThe best model is: {best_model_name} with mean error {np.mean(results[best_model_name]):.4f}")
 
 # Save results to a JSON file
@@ -86,9 +93,10 @@ output_data = {
         "name": best_model_name,
         "mean_error": np.mean(results[best_model_name]),
         "std_error": np.std(results[best_model_name]),
+        "time": results[best_model_name][-1]["elapsed_time"],
     },
 }
-# Determine the overall best parameters for each model
+# Determine best parameters for each model
 overall_best_params = {}
 for model in models:
     param_counts = {}
@@ -100,11 +108,12 @@ for model in models:
 # Convert tuples back to dictionaries for readability
 overall_best_params = {model: dict(params) for model, params in overall_best_params.items()}
 
-# Add overall best parameters to the output data
-output_data["overall_best_params"] = overall_best_params
+#### unmark to save
 
-output_file = "crossvalidation_results2.json"
-with open(output_file, "w") as f:
-    json.dump(output_data, f, indent=4)
+# output_data["overall_best_params"] = overall_best_params
 
-print(f"\nResults saved to {output_file}")
+# output_file = "crossvalidation_results2.json"
+# with open(output_file, "w") as f:
+#     json.dump(output_data, f, indent=4)
+
+# print(f"\nResults saved to {output_file}")
