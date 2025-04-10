@@ -6,6 +6,7 @@ from abaclass import *
 
 X = x_mat_reg # For testing code use: **2
 y = y_mat_reg.squeeze()
+
 attributeNames = np.array(D.columns.drop(["Rings", "AgeClass"]))
 N, M = X.shape
 
@@ -93,7 +94,7 @@ for train_index, test_index in CV.split(X, y):
     Error_test[k] = (
             np.square(y_test - X_test @ w_noreg[:, k]).sum(axis=0) / y_test.shape[0]
     )
-    # OR ALTERNATIVELY: you can use sklearn.linear_model module for linear regression (using logistic instead):
+    # OR ALTERNATIVELY: you can use sklearn.linear_model module for linear regression:
     # m = LinearRegression().fit(X_train, y_train)
     # Error_train[k] = np.square(y_train-m.predict(X_train)).sum()/y_train.shape[0]
     # Error_test[k] = np.square(y_test-m.predict(X_test)).sum()/y_test.shape[0]
