@@ -12,7 +12,7 @@ import json
 from sklearn.dummy import DummyClassifier
 
 
-# 1. Indlæs data fra JSON-filen
+
 with open("crossvalidation_results2.json", "r") as f:
     data = json.load(f)
 
@@ -22,11 +22,11 @@ best_model = data["best_model"]["name"] if isinstance(data["best_model"], dict) 
 best_params = data["best_params"] if isinstance(data["best_params"], dict) else {}
 
 
-# 2. Udregn middel og std
+
 mean_errors = [np.mean(results[model]) for model in models]
 std_errors = [np.std(results[model]) for model in models]
 
-# 3. Barplot med error ± std
+# 3. Barplot with error ± std
 plt.figure(figsize=(10, 6))
 plt.bar(models, mean_errors, yerr=std_errors, capsize=5, color='cornflowerblue')
 plt.title("Mean error pr. model (± std)", fontsize=14)
@@ -38,7 +38,7 @@ plt.tight_layout()
 plt.savefig("model_errors_barplot.png")
 # plt.show()  # Removed due to non-interactive backend
 
-# 4. Boxplot for fejlfordeling
+# 4. Boxplot for errordsitribution
 plt.figure(figsize=(10, 6))
 plt.boxplot([results[model] for model in models], tick_labels=models, patch_artist=True,
             boxprops=dict(facecolor='lightgreen', color='green'),
@@ -90,7 +90,7 @@ plt.savefig("confusion_matrix.png")
 ############################################
 
 
-# 1. Indlæs data fra JSON-filen
+
 with open("crossvalidation_resultsNY.json", "r") as f:
     data = json.load(f)
 
@@ -100,11 +100,11 @@ best_model = data["best_model"]["name"] if isinstance(data["best_model"], dict) 
 best_params = data["best_params"] if isinstance(data["best_params"], dict) else {}
 
 
-# 2. Udregn middel og std
+
 mean_errors = [np.mean(results[model]) for model in models]
 std_errors = [np.std(results[model]) for model in models]
 
-# 3. Barplot med error ± std
+# 3. Barplot with error ± std
 plt.figure(figsize=(10, 6))
 plt.bar(models, mean_errors, yerr=std_errors, capsize=5, color='cornflowerblue')
 plt.title("Mean error pr. model (± std) NY", fontsize=14)
@@ -116,7 +116,7 @@ plt.tight_layout()
 plt.savefig("model_errors_barplot_NY.png")
 # plt.show()  # Removed due to non-interactive backend
 
-# 4. Boxplot for fejlfordeling
+# 4. Boxplot for errordistribution
 plt.figure(figsize=(10, 6))
 plt.boxplot([results[model] for model in models], tick_labels=models, patch_artist=True,
             boxprops=dict(facecolor='lightgreen', color='green'),

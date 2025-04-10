@@ -15,7 +15,7 @@ model.fit(x_train_clas, y_train_clas) # Fit the model to the training data
 y_pred = model.predict(x_test_clas) # Predict the output for the test data
 
 error_rate = 1 - accuracy_score(y_test_clas, y_pred) # Calculate the error rate
-# error rate is aprox 0.44 which is a significant improvement over the base case(with lambda = 0.1)
+
 accuracy = accuracy_score(y_test_clas, y_pred) # Calculate the accuracy
 print(f"Accuracy: {accuracy:.3f}")
 print(f"Error rate: {error_rate:.3f}")
