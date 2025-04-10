@@ -10,9 +10,9 @@ from abaclass import *
 
 # Define parameter grids for each model
 param_grids = {
-    "ANN": np.linspace(0.001, 1, num=8),           # λ = alpha
+    "ANN": np.linspace(0.001, 1, num=8),        # λ = alpha
     "RLR": np.linspace(0.001, 1, num=8),        # λ = generalization factor
-    "BASE": np.linspace(0, 0, num=8)                 # param not used
+    "BASE": np.linspace(0, 0, num=8)            # param not used
 }
 
 # Storage
@@ -28,9 +28,9 @@ for model_name in models:
     print(f"\n=== Model: {model_name} ===")
     start_time = time.time()
     
-    for fold_idx, (train_idx, test_idx) in enumerate(outer_cv.split(x_train_mat_reg)):
-        x_train_outer, x_test_outer = x_train_mat_reg[train_idx], x_train_mat_reg[test_idx]
-        y_train_outer, y_test_outer = y_train_mat_reg[train_idx], y_train_mat_reg[test_idx]
+    for fold_idx, (train_idx, test_idx) in enumerate(outer_cv.split(x_mat_reg)):
+        x_train_outer, x_test_outer = x_mat_reg[train_idx], x_mat_reg[test_idx]
+        y_train_outer, y_test_outer = y_mat_reg[train_idx], y_mat_reg[test_idx]
 
         inner_cv = KFold(n_splits=inner_folds, shuffle=True, random_state=1)
         param_mse = []
