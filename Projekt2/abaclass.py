@@ -1,14 +1,11 @@
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
 
 #'M': 1, 'F': 2, 'I': 3
 
 D = pd.read_csv('../abalone/abalone.data', sep=';')
 D_test = pd.read_csv('../abalone/abalone_test.csv', sep=';')
 D_train = pd.read_csv('../abalone/abalone_training.csv', sep=';')
-
-attributeNames = D.columns.drop("Sex")
 
 #most common sex in the training set is the aim of this classification
 
@@ -55,12 +52,12 @@ y_reg = D['Rings']
 
 # Separate the data into inputs (x_data) and output (y_data)
 x_train_clas = (D_train.drop(columns=['Rings',"AgeClass"]))  # Drop the 'Sex' column to get the inputs
-x_train_reg = D_train.drop(columns=['Rings', 'Sex'])
+x_train_reg = D_train.drop(columns=['Rings', 'AgeClass'])
 y_train_clas = (D_train['AgeClass'] ) # Use the 'Sex' column as the output
 y_train_reg = D_train['Rings']  # Use the 'Rings' column as the output
 
 x_test_clas = (D_test.drop(columns=["Rings","AgeClass"]))
-x_test_reg = D_test.drop(columns=["Rings", "Sex"])
+x_test_reg = D_test.drop(columns=["Rings", "AgeClass"])
 y_test_clas = (D_test["AgeClass"])
 y_test_reg = D_test["Rings"]
 

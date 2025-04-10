@@ -1,13 +1,9 @@
+import pandas as pd
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
-from torch.utils.data import DataLoader, TensorDataset
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-import pandas as pd
-import numpy as np
 from sklearn.model_selection import KFold
+from torch.utils.data import DataLoader, TensorDataset
 
 
 # test for a fully connected network

@@ -1,11 +1,12 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from networkModels import FCNN
-from abaclass import *
-import numpy as np
 from torch.utils.data import DataLoader
 from torch.utils.data import TensorDataset
+
+from abaclass import *
+from networkModels import FCNN
+
 
 class EarlyStopping:
     def __init__(self, patience=10) -> None:

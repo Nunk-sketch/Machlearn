@@ -3,20 +3,16 @@ import time
 from dtuimldmtools import rlr_validate
 from skimage.metrics import mean_squared_error
 from sklearn.linear_model import Ridge
+from sklearn.model_selection import KFold
+from sklearn.neural_network import MLPRegressor
 
 from abaclass import *
-import numpy as np
-from sklearn.model_selection import KFold
-from sklearn.metrics import explained_variance_score
-from sklearn.neural_network import MLPRegressor
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.neighbors import KNeighborsRegressor
 
 # Define parameter grids for each model
 param_grids = {
-    "ANN": [0.001, 0.01, 0.1],           # λ = alpha
-    "RLR": [1, 0.1, 0.01, 0.001],        # λ = generalization factor
-    "BASE": [0, 0, 0, 0]                 # param not used
+    "ANN": np.linspace(0.001, 1, num=8),           # λ = alpha
+    "RLR": np.linspace(0.001, 1, num=8),        # λ = generalization factor
+    "BASE": np.linspace(0, 0, num=8)                 # param not used
 }
 
 # Storage
@@ -25,8 +21,6 @@ inner_folds = 10
 models = ["ANN", "RLR", "BASE"]
 results = {model: [] for model in models}
 best_params = {model: [] for model in models}
-
-skip_models = [] #["ANN", "RLR"]
 
 outer_cv = KFold(n_splits=outer_folds, shuffle=True, random_state=42)
 
