@@ -45,7 +45,7 @@ def initialize_model(model_name, params):
     elif model_name == "NB":
         return MultinomialNB(**params)
     elif model_name == "MN":
-        return LogisticRegression(solver='lbfgs', max_iter=1000, **params)
+        return LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=1000, **params)
     elif model_name == "BC":
         return DummyClassifier(**params)
 
