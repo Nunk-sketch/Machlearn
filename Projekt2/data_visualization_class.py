@@ -1,12 +1,7 @@
-import numpy as np
 import matplotlib.pyplot as plt
-from networkModels import FCNN
+
 from abaclass import *
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torch.utils.data import DataLoader, TensorDataset
+
 
 def visualize_loss(train_loss_history: np.ndarray, val_loss_history: np.ndarray) -> None:
     """Visualize the training and validation loss."""

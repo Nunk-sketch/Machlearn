@@ -1,11 +1,12 @@
-import numpy as np
-import scipy.stats as stats
 import json
+
+import scipy.stats as stats
 from scipy.stats import ttest_ind
+
 from abaclass import *
 
 # Load the JSON file
-with open("crossvalidation_results2.json", "r") as file:
+with open("crossvalidation_resultsNY2.json", "r") as file:
     data = json.load(file)
 
     # Extract errors for each model

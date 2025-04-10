@@ -1,10 +1,7 @@
-from abaclass import *
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import sklearn as sk
 from sklearn.metrics import accuracy_score
 from sklearn.tree import DecisionTreeClassifier
+
+from abaclass import *
 
 #classification tree
 model_ct = DecisionTreeClassifier(max_depth = 4)
